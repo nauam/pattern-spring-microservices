@@ -1,5 +1,6 @@
 package com.example.inventoryservice.service;
 
+import com.example.inventoryservice.model.Inventory;
 import com.example.inventoryservice.repository.InventoryRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,9 @@ public class InventoryService {
 
     @Transactional(readOnly = true)
     public boolean isInStock(String skuCode) {
-        return inventoryRepository.findBySkuCode(skuCode).isPresent();
+        Inventory inventory = inventoryRepository.findBySkuCode(skuCode)
+                .orElseThrow(() -> new RuntimeException("Error: Inventory not found with skuCode: " + skuCode));
+
+        return inventory.getQuantity() > 0;
     }
 }
