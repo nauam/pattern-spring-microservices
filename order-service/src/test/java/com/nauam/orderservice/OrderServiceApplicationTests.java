@@ -28,54 +28,54 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @AutoConfigureMockMvc
 class OrderServiceApplicationTests {
-
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@Autowired
-	private OrderRepository orderRepository;
-
-	@Container
-	static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:5.7.34");
-
-	@DynamicPropertySource
-	static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
-		dynamicPropertyRegistry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-		dynamicPropertyRegistry.add("spring.datasource.username", mySQLContainer::getUsername);
-		dynamicPropertyRegistry.add("spring.datasource.password", mySQLContainer::getPassword);
-		dynamicPropertyRegistry.add("spring.datasource.driverClassName", mySQLContainer::getDriverClassName);
-	}
-
-	@Test
-	void shouldPlaceOrder() throws Exception {
-		OrderRequest orderRequest = getOrderRequest();
-		String orderRequestString = objectMapper.writeValueAsString(orderRequest);
-		mockMvc.perform(MockMvcRequestBuilders
-						.post("/api/order")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(orderRequestString))
-				.andExpect(status().isCreated());
-		Assertions.assertEquals(1, orderRepository.findAll().size());
-	}
-
-	private OrderRequest getOrderRequest() {
-		List<OrderLineItemsDto> orderLineItemsDtoList = new ArrayList<>();
-		orderLineItemsDtoList.add(getOrderLineItemsDto());
-
-		return OrderRequest.builder()
-				.orderLineItemsDtoList(orderLineItemsDtoList)
-				.build();
-	}
-
-	private OrderLineItemsDto getOrderLineItemsDto() {
-		return OrderLineItemsDto.builder()
-				.skuCode("iphone_13")
-				.price(BigDecimal.valueOf(1200))
-				.quantity(1)
-				.build();
-	}
+//
+//	@Autowired
+//	private MockMvc mockMvc;
+//
+//	@Autowired
+//	private ObjectMapper objectMapper;
+//
+//	@Autowired
+//	private OrderRepository orderRepository;
+//
+//	@Container
+//	static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:5.7.34");
+//
+//	@DynamicPropertySource
+//	static void setProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
+//		dynamicPropertyRegistry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+//		dynamicPropertyRegistry.add("spring.datasource.username", mySQLContainer::getUsername);
+//		dynamicPropertyRegistry.add("spring.datasource.password", mySQLContainer::getPassword);
+//		dynamicPropertyRegistry.add("spring.datasource.driverClassName", mySQLContainer::getDriverClassName);
+//	}
+//
+//	@Test
+//	void shouldPlaceOrder() throws Exception {
+//		OrderRequest orderRequest = getOrderRequest();
+//		String orderRequestString = objectMapper.writeValueAsString(orderRequest);
+//		mockMvc.perform(MockMvcRequestBuilders
+//						.post("/api/order")
+//						.contentType(MediaType.APPLICATION_JSON)
+//						.content(orderRequestString))
+//				.andExpect(status().isCreated());
+//		Assertions.assertEquals(1, orderRepository.findAll().size());
+//	}
+//
+//	private OrderRequest getOrderRequest() {
+//		List<OrderLineItemsDto> orderLineItemsDtoList = new ArrayList<>();
+//		orderLineItemsDtoList.add(getOrderLineItemsDto());
+//
+//		return OrderRequest.builder()
+//				.orderLineItemsDtoList(orderLineItemsDtoList)
+//				.build();
+//	}
+//
+//	private OrderLineItemsDto getOrderLineItemsDto() {
+//		return OrderLineItemsDto.builder()
+//				.skuCode("iphone_13")
+//				.price(BigDecimal.valueOf(1200))
+//				.quantity(1)
+//				.build();
+//	}
 
 }

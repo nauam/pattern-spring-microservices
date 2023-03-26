@@ -1,6 +1,6 @@
 package com.nauam.orderservice.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.util.List;

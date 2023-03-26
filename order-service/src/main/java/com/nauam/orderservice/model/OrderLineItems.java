@@ -1,7 +1,7 @@
 package com.nauam.orderservice.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
