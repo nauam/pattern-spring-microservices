@@ -16,6 +16,7 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+
     public void createProduct(ProductRequest productRequest) {
         Product product = Product.builder()
                 .name(productRequest.getName())
@@ -24,7 +25,7 @@ public class ProductService {
                 .build();
 
         productRepository.save(product);
-        log.info("Product {} is saved",product.getId());
+        log.info("Product {} is saved", product.getId());
     }
 
     public List<ProductResponse> getAllProducts() {
