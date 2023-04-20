@@ -1,7 +1,11 @@
 package com.nauam.orderservice.model;
 
-import javax.persistence.*;
-import lombok.*;
+import jakarta.persistence.*;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -9,8 +13,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "t_orders")
 @Entity
-@Table(name="t_orders")
 public class Order {
 
     @Id
@@ -19,4 +23,5 @@ public class Order {
     private String orderNumber;
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderLineItems> orderLineItemsList;
+
 }

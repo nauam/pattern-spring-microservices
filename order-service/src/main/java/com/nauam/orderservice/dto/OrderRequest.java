@@ -1,10 +1,9 @@
 package com.nauam.orderservice.dto;
 
-import com.nauam.orderservice.model.OrderLineItems;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
+
     private List<OrderLineItemsDto> orderLineItemsDtoList;
 
 }

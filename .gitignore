@@ -1,18 +1,16 @@
+HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+.idea
 *.iws
 *.iml
 *.ipr
 
-### Eclipse ###
+### STS ###
 .apt_generated
 .classpath
 .factorypath
@@ -36,3 +34,19 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### My SQL Host Data ###
+/volumes/data-mongo-product
+/volumes/data-mysql-keycloak
+/volumes/data-mysql-keycloak
+/volumes/data-postgres-inventory
+/volumes/data-postgres-order
+
+/volumes/grafana/alerting
+/volumes/grafana/csv
+/volumes/grafana/plugins
+/volumes/grafana/png
+/volumes/grafana/storage
+/volumes/grafana/*.db
+
+

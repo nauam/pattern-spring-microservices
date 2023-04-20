@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: data-postgres-order
+  name: data-postgres-order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-postgres-order
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: data-postgres-order
+    spec:
+      containers:
+        - args:
+            - -p
+            - "5431"
+          env:
+            - name: PGDATA
+              value: /data/postgres
+            - name: POSTGRES_DB
+              value: order_db
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: admin
+          image: postgres
+          name: data-postgres-order
+          ports:
+            - containerPort: 5431
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/postgres
+              name: data-postgres-order-claim0
+      restartPolicy: Always
+      volumes:
+        - name: data-postgres-order-claim0
+          persistentVolumeClaim:
+            claimName: data-postgres-order-claim0
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: data-postgres-order
+  name: data-postgres-order
+spec:
+  ports:
+    - name: "5431"
+      port: 5431
+      targetPort: 5431
+  selector:
+    app: data-postgres-order
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: data-postgres-order-claim0
+  name: data-postgres-order-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}

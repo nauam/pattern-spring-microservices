@@ -1,14 +1,24 @@
 package com.nauam.orderservice.event;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.context.ApplicationEvent;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class OrderPlacedEvent {
+@Getter
+@Setter
+public class OrderPlacedEvent extends ApplicationEvent {
+
     private String orderNumber;
+
+    public OrderPlacedEvent(Object source, String orderNumber) {
+        super(source);
+        this.orderNumber = orderNumber;
+    }
+
+    public OrderPlacedEvent(String orderNumber) {
+        super(orderNumber);
+        this.orderNumber = orderNumber;
+    }
 }

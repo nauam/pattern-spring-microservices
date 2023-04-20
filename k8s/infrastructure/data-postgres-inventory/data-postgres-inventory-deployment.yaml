@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: data-postgres-inventory
+  name: data-postgres-inventory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-postgres-inventory
+  template:
+    metadata:
+      labels:
+        app: data-postgres-inventory
+    spec:
+      containers:
+        - args:
+            - -p
+            - "5430"
+        - env:
+            - name: PGDATA
+              value: /data/postgres
+            - name: POSTGRES_DB
+              value: inventory_db
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_USER
+              value: admin
+          image: postgres
+          name: data-postgres-inventory
+          ports:
+            - containerPort: 5430
+          resources: {}
+          volumeMounts:
+            - mountPath: /data/postgres
+              name: data-postgres-inventory-claim0
+      restartPolicy: Always
+      volumes:
+        - name: data-postgres-inventory-claim0
+          persistentVolumeClaim:
+            claimName: data-postgres-inventory-claim0
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: data-postgres-inventory
+  name: data-postgres-inventory
+spec:
+  ports:
+    - name: "5430"
+      port: 5430
+      targetPort: 5430
+  selector:
+    app: data-postgres-inventory
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: data-postgres-inventory-claim0
+  name: data-postgres-inventory-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}

@@ -1,8 +1,11 @@
 package com.nauam.orderservice.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import javax.persistence.*;
-import lombok.*;
+import jakarta.persistence.*;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 
@@ -10,8 +13,8 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "t_order_line_items")
 @Entity
-@Table(name="t_orders_line_items")
 public class OrderLineItems {
 
     @Id
@@ -20,4 +23,5 @@ public class OrderLineItems {
     private String skuCode;
     private BigDecimal price;
     private Integer quantity;
+
 }

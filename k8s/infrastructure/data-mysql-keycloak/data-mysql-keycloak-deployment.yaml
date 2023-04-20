@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: data-mysql-keycloak
+  name: data-mysql-keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-mysql-keycloak
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: data-mysql-keycloak
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: keycloak_db
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: keycloak
+          image: mysql:5.7
+          name: data-mysql-keycloak
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: data-mysql-keycloak-claim0
+      restartPolicy: Always
+      volumes:
+        - name: data-mysql-keycloak-claim0
+          persistentVolumeClaim:
+            claimName: data-mysql-keycloak-claim0
+status: {}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    app: data-mysql-keycloak-claim0
+  name: data-mysql-keycloak-claim0
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+status: {}

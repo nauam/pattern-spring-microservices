@@ -9,7 +9,10 @@ import com.nauam.orderservice.event.OrderPlacedEvent;
 import com.nauam.orderservice.model.Order;
 import com.nauam.orderservice.model.OrderLineItems;
 import com.nauam.orderservice.repository.OrderRepository;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +29,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
-    private final Tracer tracer;
-    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
+    private final ObservationRegistry observationRegistry;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 
     public String placeOrder(OrderRequest orderRequest) {
@@ -40,9 +43,9 @@ public class OrderService {
                 .map(OrderLineItems::getSkuCode)
                 .toList();
 
-        Span inventoryServiceLookup = tracer.nextSpan().name("InventoryServiceLookup");
+        Observation inventoryServiceObservation = Observation.createNotStarted("inventory-service-lookup", this.observationRegistry);
 
-        try (Tracer.SpanInScope spanInScope = tracer.withSpanInScope(inventoryServiceLookup.start())) {
+        return inventoryServiceObservation.observe(() -> {
             InventoryResponse[] inventoryResponses = webClientBuilder.build().get()
                     .uri("http://inventory-service/api/inventory",
                             uriBuilder -> uriBuilder.queryParam("skuCode", skuCodes).build())
@@ -55,15 +58,11 @@ public class OrderService {
 
             if (allProductsInStock) {
                 orderRepository.save(order);
-                kafkaTemplate.send("notificationTopic", OrderPlacedEvent.builder()
-                                                                .orderNumber(order.getOrderNumber())
-                                                                .build());
+                applicationEventPublisher.publishEvent(new OrderPlacedEvent(this, order.getOrderNumber()));
                 return "Order Placed Successfully";
             } else
                 throw new IllegalArgumentException("Product is not in stock, please try again later");
-        } finally {
-            inventoryServiceLookup.flush();
-        }
+        });
     }
 
     private OrderLineItems mapToDto(OrderLineItemsDto orderLineItemsDto) {
